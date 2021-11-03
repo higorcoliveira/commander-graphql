@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using commander_graphql.GraphQL;
+using GraphQL.Server.Ui.Voyager;
 
 namespace commander_graphql
 {
@@ -25,9 +26,10 @@ namespace commander_graphql
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // use AddPooledDbContextFactory to allow parallel execution
             services
-                .AddDbContext<AppDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("CommandConnection")));
-            
+                .AddPooledDbContextFactory<AppDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("CommandConnection")));
+
             services
                 .AddGraphQLServer()
                 .AddQueryType<Query>();
@@ -44,11 +46,14 @@ namespace commander_graphql
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                endpoints.MapGraphQL();
             });
+
+            // graphical tool to visualize models in graphql
+            app.UseGraphQLVoyager(new VoyagerOptions()
+            {
+                GraphQLEndPoint = "/graphql"
+            }, "/graphql-voyager");
         }
     }
 }
