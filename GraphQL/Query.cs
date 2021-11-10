@@ -1,8 +1,8 @@
 using System.Linq;
-using commander_graphql.Data;
-using commander_graphql.Models;
 using HotChocolate;
 using HotChocolate.Data;
+using commander_graphql.Data;
+using commander_graphql.Models;
 
 namespace commander_graphql.GraphQL
 {
@@ -12,6 +12,12 @@ namespace commander_graphql.GraphQL
         public IQueryable<Platform> GetPlatform([ScopedService] AppDbContext context)
         {
             return context.Platforms;
+        }
+
+        [UseDbContext(typeof(AppDbContext))]
+        public IQueryable<Command> GetCommand([ScopedService] AppDbContext context)
+        {
+            return context.Commands;
         }
     }
 }

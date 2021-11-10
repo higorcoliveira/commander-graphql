@@ -1,17 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using commander_graphql.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using commander_graphql.Data;
 using commander_graphql.GraphQL;
+using commander_graphql.GraphQL.Commands;
+using commander_graphql.GraphQL.Platforms;
+using Microsoft.Extensions.Configuration;
 using GraphQL.Server.Ui.Voyager;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace commander_graphql
 {
@@ -32,7 +29,9 @@ namespace commander_graphql
 
             services
                 .AddGraphQLServer()
-                .AddQueryType<Query>();
+                .AddQueryType<Query>()
+                .AddType<PlatformType>()
+                .AddType<CommandType>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
